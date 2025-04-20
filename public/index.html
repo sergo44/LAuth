@@ -1,0 +1,38 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Example project</title>
+</head>
+<body>
+<h1>Hi</h1>
+<p>This is an example project.</p>
+
+<h2>SignUp</h2>
+<form id="signUp" action="/Api/Users/SignUp" method="POST">
+    <div>
+        <label for="signUpLogin">Укажите логин</label>
+        <input type="text" id="signUpLogin" name="login" placeholder="Укажите логин">
+    </div>
+
+    <div>
+        <label for="signUpEmail">Укажите адрес электронной почты</label>
+        <input type="text" id="signUpEmail" name="email" placeholder="Укажите адрес электронной почты">
+    </div>
+
+    <div>
+        <label for="signUpPassword">Придумайте пароль</label>
+        <input type="password" id="signUpPassword" name="password" placeholder="Придумайте пароль">
+    </div>
+
+    <div>
+        <label for="signUpPasswordConfirm">Придумайте пароль</label>
+        <input type="password" id="signUpPasswordConfirm" name="password_confirm" placeholder="Повторите пароль">
+    </div>
+
+    <div>
+        <button type="submit">Регистрация</button>
+    </div>
+</form>
+
+</body>
+</html>

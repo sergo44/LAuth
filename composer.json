@@ -1,0 +1,31 @@
+{
+  "name": "la/la-auth",
+  "description": "Demo project for La Tech HR",
+  "type": "project",
+  "license": "Commercial",
+  "autoload": {
+    "psr-4": {
+      "La\\": "src/La"
+    }
+  },
+  "authors": [
+    {
+      "name": "Sergey A Oskorbin",
+      "email": "sergo44@mail.ru"
+    }
+  ],
+  "minimum-stability": "RC",
+  "require": {
+    "ext-mbstring": "*",
+    "ext-pdo": "*",
+    "ext-gettext": "*",
+    "ext-curl": "*",
+    "ext-redis": "*",
+    "ext-imagick": "*",
+    "ext-fileinfo": "*",
+    "ext-pcntl": "*",
+    "ext-gd": "*",
+    "ext-bcmath": "*",
+    "ramsey/uuid": "~4.7.6"
+  }
+}
