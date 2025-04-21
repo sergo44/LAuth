@@ -23,6 +23,7 @@ class SignInJsonView extends JsonView implements ViewInterface, \JsonSerializabl
     public function jsonSerialize(): array
     {
         return array(
+            "result" => $this->result,
             "payload" => array (
                 "user" => $this->user,
                 "access_token" => $this->user ? new AccessToken($this->user?->uuid) : null
