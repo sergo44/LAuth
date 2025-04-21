@@ -74,5 +74,17 @@ services:
     ports:
       - '${POSTGRES_PORT}:5432'
 
+  redis:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./redis.Dockerfile
+    container_name: ${COMPOSE_PROJECT_NAME:?err}_redis
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   db:

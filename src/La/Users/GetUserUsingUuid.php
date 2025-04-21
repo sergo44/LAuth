@@ -16,6 +16,11 @@ use PDO;
 class GetUserUsingUuid implements GetUserInterface
 {
     /**
+     * Использовать кеш Redis
+     * @var bool $use_cache
+     */
+    protected bool $use_cache = false;
+    /**
      * Конструктор класса
      * @param string $uuid
      * @param PDO|null $dbh
@@ -30,12 +35,26 @@ class GetUserUsingUuid implements GetUserInterface
         }
     }
 
+    public function setUseCache(bool $use_cache): GetUserUsingUuid
+    {
+        $this->use_cache = $use_cache;
+        return $this;
+    }
+
+
     /**
      * Возвращает пользователя
      * @return User|null
      */
     public function getUser(): ?User
     {
+        if ($this->use_cache) {
+            if ($user = UsersCache::get($this->uuid)) {
+                return $user;
+            };
+        }
+
+
         $stmt = $this->dbh->prepare(/** @lang PostgreSQL */"
             SELECT
                 *
@@ -49,6 +68,11 @@ class GetUserUsingUuid implements GetUserInterface
             "uuid" => $this->uuid
         ));
 
-        return $stmt->fetchObject(User::class) ?: null;
+        $user = $stmt->fetchObject(User::class) ?: null;
+        if ($user && $this->use_cache) {
+            UsersCache::add($user);
+        }
+
+        return $user;
     }
 }

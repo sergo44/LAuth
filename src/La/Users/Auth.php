@@ -41,7 +41,11 @@ class Auth
                         try {
 
                             $decoded = JWT::decode($token_value, new Key(AccessToken::$secret, AccessToken::$alg));
-                            self::$user = new GetUserUsingUuid($decoded->uuid)->getUser();
+                            self::$user =
+                                new GetUserUsingUuid($decoded->uuid)
+                                    ->setUseCache(true)
+                                    ->getUser();
+
                             return self::$user;
 
                         } catch (\Exception $e) {
