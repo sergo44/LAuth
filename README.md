@@ -1,0 +1,4 @@
+# Запуск
+1. Скопируйте docker/.env-example в docker/.env и в случае необходимости - замените порты или другие параметры
+2. Запустите docker-compose up
+3. Перейдите в браузер http://localhost:[port]
