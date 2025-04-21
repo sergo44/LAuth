@@ -12,12 +12,12 @@ use La\FrontController\ControllerException;
 use La\FrontController\ControllerInterface;
 use La\FrontController\LayoutInterface;
 use La\FrontController\RequestDataInterface;
-use La\FrontController\ViewInterface;
 use La\Users\GetUserUsingLogin;
 use La\Users\SignUp\Views\SignUpJsonView;
 use La\Users\User;
 use La\Users\UserStatusEnum;
 use La\Users\UserStorage;
+use La\Validators\EmailExtendedValidator;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -71,6 +71,11 @@ class SignUpController extends BaseController implements ControllerInterface
             $email = $this->request->getString("email", 255);
             if (!$email) {
                 throw new ControllerException("Не указан e-mail пользователя");
+            }
+
+            $validator = new EmailExtendedValidator($email);
+            if ($validator->validate($this->view->result)->error) {
+                return $this;
             }
 
             $exists = new GetUserUsingLogin($login)->getUser();

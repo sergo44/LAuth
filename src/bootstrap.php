@@ -13,7 +13,9 @@ if (PHP_VERSION_ID < 80401) {
 }
 
 // Запись логов
-ini_set("log_errors", "/var/log/php/php-error.log");
+error_reporting(E_ALL);
+ini_set('log_errors', "on");
+ini_set('error_log', __DIR__ . "/var/log/php/php-error.log");
 
 // Установка локали
 setlocale(LC_ALL, 'ru_RU.UTF-8');

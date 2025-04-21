@@ -8,6 +8,7 @@ const LA_POSTGRES_PORT = 5432;
 const LA_POSTGRES_USER = "postgres";
 const LA_POSTGRES_PASSWORD = "RxTEiqz7YtxIDwq6";
 const LA_POSTGRES_DB = "postgres";
+const LA_MAIL_FROM = "sergo44@mail.ru";
 
 // Конфиг Redis
 const LA_DEFAULT_REDIS_HOST = "redis";
