@@ -79,4 +79,10 @@ try {
     }
     print $e->getMessage();
     exit(1);
+} catch (\La\HttpError401Exception $e) {
+    if (!headers_sent()) {
+        header("HTTP/1.1 401 Unauthorized", true, 401);
+    }
+    print $e->getMessage();
+    exit(1);
 }
