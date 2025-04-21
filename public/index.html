@@ -13,6 +13,7 @@
     <div class="flex w-full max-w-xs me-2">
         <form id="signUp" action="/Api/Users/SignUp" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <p class="text-lg font-bold">Sign Up</p>
+            <div class="sign-up-result"></div>
             <div class="mb-4">
                 <label for="signUpLogin" class="block text-gray-700 text-sm font-bold mb-2">Укажите логин</label>
                 <input type="text" id="signUpLogin" name="login" placeholder="Укажите логин" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -46,6 +47,7 @@
     <div class="flex w-full">
         <form id="signIn" action="/Api/Users/SignIn" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <p class="text-lg font-bold">Sign In</p>
+            <div class="sign-in-result"></div>
             <div class="mb-4">
                 <label for="signInLogin" class="block text-gray-700 text-sm font-bold mb-2">Укажите логин</label>
                 <input type="text" id="signInLogin" name="login" placeholder="Укажите логин" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -62,9 +64,145 @@
                         Войти
                     </button>
                 </div>
+
+                <div class="mt-4">
+                    <button id="checkAuthBtn" type="button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Проверить авторизацию [JWT]
+                    </button>
+                    <div id="authCheckResult" class="mt-2"></div>
+                </div>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    document.getElementById('signUp').addEventListener('submit', async function(e) {
+
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+
+        fetch('/Api/Users/SignUp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.querySelector('.sign-up-result');
+                if (data.result.success) {
+                    resultDiv.innerHTML = '<p class="text-green-500">Регистрация успешна!</p>';
+                } else {
+                    let errorsHtml = '<div class="text-red-500"><p>Ошибки:</p><ul>';
+                    data.result.errors.forEach(error => {
+                        errorsHtml += `<li>${error.message}</li>`;
+                    });
+                    errorsHtml += '</ul></div>';
+                    resultDiv.innerHTML = errorsHtml;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.querySelector('.sign-up-result').innerHTML = '<p class="text-red-500">Произошла ошибка при отправке формы</p>';
+            });
+    });
+
+    document.getElementById('signIn').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const resultDiv = form.querySelector('.sign-in-result');
+        resultDiv.innerHTML = '';
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    login: form.signInLogin.value,
+                    password: form.signInPassword.value
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.result.success) {
+                // Сохраняем JWT токен в localStorage
+                localStorage.setItem('access_token', data.payload.access_token);
+
+                // Показываем сообщение об успехе
+                resultDiv.innerHTML = '<p class="text-green-500">Вход выполнен успешно!</p>';
+
+                // Перенаправляем пользователя или обновляем страницу
+                // window.location.href = '/profile';
+            } else {
+                // Показываем ошибки, если они есть
+                let errorsHtml = '<div class="text-red-500"><p>Ошибки:</p><ul>';
+                data.result.errors.forEach(error => {
+                    errorsHtml += `<li>${error.message}</li>`;
+                });
+                errorsHtml += '</ul></div>';
+                resultDiv.innerHTML = errorsHtml;
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            resultDiv.innerHTML = '<p class="text-red-500">Произошла ошибка при отправке запроса</p>';
+        }
+    });
+
+    // Обработчик кнопки проверки авторизации
+    document.getElementById('checkAuthBtn').addEventListener('click', async function() {
+        const resultDiv = document.getElementById('authCheckResult');
+        resultDiv.innerHTML = '';
+
+        const token = localStorage.getItem('access_token');
+
+        if (!token) {
+            resultDiv.innerHTML = '<p class="text-red-500">Токен авторизации не найден. Пожалуйста, войдите.</p>';
+            return;
+        }
+
+        try {
+
+            const response = await fetch('/Api/Users/SignIn/Check', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.result.success) {
+                resultDiv.innerHTML = '<p class="text-green-500">Авторизация подтверждена!<br>' + data.payload.user.login + ' [' + data.payload.user.uuid + '] </p>';
+            } else {
+                let errorsHtml = '<div class="text-red-500"><p>Ошибка проверки авторизации:</p><ul>';
+                data.result.errors.forEach(error => {
+                    errorsHtml += `<li>${error.message}</li>`;
+                });
+                errorsHtml += '</ul></div>';
+                resultDiv.innerHTML = errorsHtml;
+            }
+
+        } catch (error) {
+            console.error('Ошибка:', error);
+            resultDiv.innerHTML = '<p class="text-red-500">Произошла ошибка при проверке авторизации</p>';
+        }
+    });
+
+
+
+</script>
+
 </body>
 </html>

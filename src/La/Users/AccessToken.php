@@ -12,12 +12,12 @@ class AccessToken implements \JsonSerializable
      * Секрет
      * @var string
      */
-    protected static string $secret = "86kHIwhcE5DPGc61vf02K1abZCbuopMS";
+    public static string $secret = "86kHIwhcE5DPGc61vf02K1abZCbuopMS";
     /**
      * Алгоритм шифрования
      * @var string
      */
-    protected static string $alg = "HS256";
+    public static string $alg = "HS256";
     /**
      * Идентификатор пользователя
      * @var string

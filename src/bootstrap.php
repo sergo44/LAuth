@@ -5,7 +5,7 @@ declare(strict_types=1);
 // Проверка версии PHP
 use La\ApplicationError;
 use La\FrontController\Dispatcher;
-use La\Page404Exception;
+use La\HttpError404Exception;
 
 if (PHP_VERSION_ID < 80401) {
     print "PHP 8.4 Required";
@@ -62,7 +62,7 @@ try {
         $dispatcher->controller_entity->layout->render($dispatcher->controller_entity->view);
     } else {
         // Маршрутизация через файлы не удалась, выводим 404
-        throw new Page404Exception("Page not found");
+        throw new HttpError404Exception("Page not found");
     }
 
 } catch (Error | ApplicationError $e) {
@@ -73,7 +73,7 @@ try {
     print $e->getMessage();
     exit(1);
 
-} catch (Page404Exception $e) {
+} catch (HttpError404Exception $e) {
     if (!headers_sent()) {
         header("HTTP/1.1 404 Not Found", true, 404);
     }
