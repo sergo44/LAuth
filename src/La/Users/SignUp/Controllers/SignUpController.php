@@ -7,12 +7,14 @@ namespace La\Users\SignUp\Controllers;
 use DateTimeInterface;
 use La\ApplicationError;
 use La\Dt;
+use La\FrontController\BaseController;
 use La\FrontController\ControllerException;
 use La\FrontController\ControllerInterface;
 use La\FrontController\LayoutInterface;
 use La\FrontController\RequestDataInterface;
 use La\FrontController\ViewInterface;
 use La\Users\GetUserUsingLogin;
+use La\Users\SignUp\Views\SignUpJsonView;
 use La\Users\User;
 use La\Users\UserStatusEnum;
 use La\Users\UserStorage;
@@ -23,45 +25,15 @@ use Ramsey\Uuid\Uuid;
  *
  * @package La\SignUp
  */
-class SignUpController implements ControllerInterface
+class SignUpController extends BaseController implements ControllerInterface
 {
-    /**
-     * @inheritdoc
-     * @var RequestDataInterface
-     */
-    public RequestDataInterface $request {
-        get {
-            return $this->request;
-        }
-    }
-
-    /**
-     * @inheritdoc
-     * @var ViewInterface
-     */
-    public ViewInterface $view {
-        get {
-            return $this->view;
-        }
-    }
-
-    /**
-     * @inheritdoc
-     * @var LayoutInterface
-     */
-    public LayoutInterface $layout {
-        get {
-            return $this->layout;
-        }
-    }
-
     /**
      * Конструктор класса
      * @param RequestDataInterface $request
-     * @param ViewInterface $view
+     * @param SignUpJsonView $view
      * @param LayoutInterface $layout
      */
-    public function __construct(RequestDataInterface $request, ViewInterface $view, LayoutInterface $layout)
+    public function __construct(RequestDataInterface $request, SignUpJsonView $view, LayoutInterface $layout)
     {
         $this->request = $request;
         $this->view = $view;
@@ -77,17 +49,17 @@ class SignUpController implements ControllerInterface
     {
         try {
 
-            $login = trim($this->request->getString("login") ?? "");
+            $login = trim($this->request->getString("login", 255) ?? "");
             if (!$login) {
                 throw new ControllerException("Не указан логин пользователя");
             }
 
-            $password = $this->request->getString("password") ?? "";
+            $password = $this->request->getString("password", 255) ?? "";
             if (!$password) {
                 throw new ControllerException("Не указан пароль пользователя");
             }
 
-            $password_confirm = $this->request->getString("password_confirm") ?? "";
+            $password_confirm = $this->request->getString("password_confirm", 255) ?? "";
             if (!$password_confirm) {
                 throw new ControllerException("Не указан пароль пользователя");
             }
@@ -96,7 +68,7 @@ class SignUpController implements ControllerInterface
                 throw new ControllerException("Пароль и подтверждение пароля не совпадают");
             }
 
-            $email = $this->request->getString("email");
+            $email = $this->request->getString("email", 255);
             if (!$email) {
                 throw new ControllerException("Не указан e-mail пользователя");
             }

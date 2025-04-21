@@ -25,8 +25,11 @@ class RequestData implements RequestDataInterface
     /**
      * @inheritDoc
      */
-    public function getString(string $key): ?string
+    public function getString(string $key, ?int $max_length = null): ?string
     {
-        return $_REQUEST[$key] ?? null;
+        return
+            isset($_REQUEST[$key]) && !is_array($_REQUEST[$key])
+                ? (isset($max_length) ? mb_substr($_REQUEST[$key], 0, $max_length) : $_REQUEST[$key])
+                : null;
     }
 }

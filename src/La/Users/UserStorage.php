@@ -64,4 +64,25 @@ class UserStorage
 
         return $this;
     }
+
+    /**
+     * Обновление даты последнего входа пользователя
+     * @return self
+     */
+    public function updateSignInTimestamp(): self
+    {
+        $this->pdo->prepare(/** @lang PostgreSQL */"
+            UPDATE 
+                users
+            SET 
+                sign_in_datetime_utc = :sign_in_datetime_utc
+            WHERE 
+                uuid = :uuid
+        ")->execute(array(
+            "sign_in_datetime_utc" => $this->user->sign_in_datetime_utc,
+            "uuid" => $this->user->uuid
+        ));
+
+        return $this;
+    }
 }

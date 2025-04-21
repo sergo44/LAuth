@@ -10,6 +10,7 @@ use La\FrontController\FileRoute;
 use La\FrontController\RequestData\RequestData;
 use La\FrontController\RouterInterface;
 use La\Layouts\JsonLayout;
+use La\Users;
 
 /**
  * Класс для маршрутизации запросов к API пользователей
@@ -27,7 +28,15 @@ class Routes extends FileRoute implements RouterInterface
         if (preg_match("#^/?Api/Users/SignUp/?$#", $this->dispatcher->path)) {
             return new SignUp\Controllers\SignUpController(
                 new RequestData(),
-                new SignUp\Views\SignUpJsonView(),
+                new Users\SignUp\Views\SignUpJsonView(),
+                new JsonLayout()
+            )->index();
+        }
+
+        if (preg_match("#^/?Api/Users/SignIn/?$#", $this->dispatcher->path)) {
+            return new SignIn\Controllers\SignInController(
+                new RequestData(),
+                new Users\SignIn\Views\SignInJsonView(),
                 new JsonLayout()
             )->index();
         }

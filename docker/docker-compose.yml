@@ -70,6 +70,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?:err}
     volumes:
       - 'db:/var/lib/postgresql/data'
+      - './etc/postgres/initdb.d:/docker-entrypoint-initdb.d/'
     ports:
       - '${POSTGRES_PORT}:5432'
 

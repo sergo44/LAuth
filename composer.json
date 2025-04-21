@@ -26,6 +26,7 @@
     "ext-pcntl": "*",
     "ext-gd": "*",
     "ext-bcmath": "*",
-    "ramsey/uuid": "~4.7.6"
+    "ramsey/uuid": "~4.7.6",
+    "firebase/php-jwt": "~v6.11.1"
   }
 }
